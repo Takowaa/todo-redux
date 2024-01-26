@@ -1,12 +1,8 @@
 import {createSlice, current} from '@reduxjs/toolkit'
+import {getTodos, deleteOneTodo, addOneTodo} from "./actions.js";
 
 const initialState = {
-  todos: [
-    {
-      id:1,
-      title: "name"
-    }
-  ],
+  todos: [],
 }
 
 export const todosSlice = createSlice({
@@ -16,11 +12,18 @@ export const todosSlice = createSlice({
         addTodo: (state,action) =>{
           console.log(current(state))
           state.todos = [...state.todos, action.payload]
-        },
-      deleteTodo: (state,action) => {
-          state.todos = state.todos.filter((el) => el.id !== action.payload)
-      }
+        }
   },
+  extraReducers: (builder) => {
+    builder.addCase(getTodos.fulfilled, (state,action) =>{
+            state.todos = action.payload
+    }).addCase(deleteOneTodo.fulfilled, (state,action) =>{
+      console.log(action.payload)
+      state.todos = state.todos.filter((el) => el.id !== action.payload.id)
+    }).addCase(addOneTodo.fulfilled, (state,action) =>{
+      state.todos = [...state.todos, action.payload]
+    })
+  }
 })
 
 
